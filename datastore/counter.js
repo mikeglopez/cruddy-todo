@@ -16,10 +16,12 @@ const zeroPaddedNumber = (num) => {
 };
 
 const readCounter = (callback) => {
+  console.log('exports.counterFile:', exports.counterFile)
   fs.readFile(exports.counterFile, (err, fileData) => {
     if (err) {
       callback(null, 0);
     } else {
+      console.log('fileData', Number(fileData));
       callback(null, Number(fileData));
     }
   });
@@ -39,8 +41,15 @@ const writeCounter = (count, callback) => {
 // Public API - Fix this function //////////////////////////////////////////////
 
 exports.getNextUniqueId = () => {
-  counter = counter + 1;
-  return zeroPaddedNumber(counter);
+  // readCounter -> check what current counter is at
+  // readCounter will invoke the callback with 'fileData' if it's success
+  // write the new Counter to writeCounter
+    // what is the last id in 'fileData'
+    // writeCouter(count = 'last ID inside fileData', callback);
+  readCounter((err = null, fileData) => {
+    counter = fileData + 1;
+    writeCounter(counter, (err = null, counterString) => {return counterString;})
+  });
 };
 
 
@@ -48,3 +57,5 @@ exports.getNextUniqueId = () => {
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////
 
 exports.counterFile = path.join(__dirname, 'counter.txt');
+exports.getNextUniqueId();
+console.log("This is a file path", exports.counterFile);
