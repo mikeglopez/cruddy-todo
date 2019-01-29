@@ -40,7 +40,7 @@ const writeCounter = (count, callback) => {
 
 // Public API - Fix this function //////////////////////////////////////////////
 
-exports.getNextUniqueId = () => {
+exports.getNextUniqueId = (err, data) => {
   // readCounter -> check what current counter is at
   // readCounter will invoke the callback with 'fileData' if it's success
   // write the new Counter to writeCounter
