@@ -42,7 +42,11 @@ exports.getNextUniqueId = (callback) => { // callback is called onece the rest o
   readCounter((err, fileData) => { // readCounter accepts a callback (error-first)
     var counter = fileData + 1;
     writeCounter(counter, (err, counterString) => {
-      callback(err, counterString);
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, counterString);
+      }
     });
   });
 };
