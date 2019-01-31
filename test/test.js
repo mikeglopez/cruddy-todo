@@ -171,8 +171,8 @@ describe('todos', () => {
       const updatedTodoText = 'updated todo';
       todos.update(todoId, updatedTodoText, (err, todo) => {
         const todoFileContents = fs.readFileSync(path.join(todos.dataDir, `${todoId}.txt`)).toString();
-        console.log('TodoFileContents:***** ', todoFileContents);
-        console.log('updatedTodoText:***** ', updatedTodoText);
+        // console.log('TodoFileContents:***** ', todoFileContents);
+        // console.log('updatedTodoText:***** ', updatedTodoText);
         expect(todoFileContents).to.equal(updatedTodoText);
         done();
       });
