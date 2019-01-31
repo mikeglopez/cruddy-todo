@@ -51,10 +51,30 @@ exports.readOne = (id, callback) => {
     } else {
       callback(null, { id, text: todoText });
     }
-  })
+  });
 };
 
 exports.update = (id, text, callback) => {
+  // readfile get todo text
+  // write to file new todo text
+  fs.readFile(`${exports.dataDir}/${id}.txt`, 'utf8', (err, todoText) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      console.log('todoText:', todoText);
+      fs.writeFile(`${exports.dataDir}/${id}.txt`, text, function (err) {
+        if (err) {
+          console.log('This is inside writeFile err#####', err);
+          throw err;
+        } else {
+          console.log('Saved!');
+          callback(null, text);
+        }
+      });
+    }
+  });
+
+
   var item = items[id];
   if (!item) {
     callback(new Error(`No item with id: ${id}`));
