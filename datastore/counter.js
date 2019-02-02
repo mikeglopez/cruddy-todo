@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const sprintf = require('sprintf-js').sprintf;
+const Promise = require('bluebird');
 
 
 // Private helper functions ////////////////////////////////////////////////////
@@ -23,6 +24,7 @@ const readCounter = (callback) => {
     }
   });
 };
+const readCounterAsync = Promise.promisify(readCounter);
 
 const writeCounter = (count, callback) => {
   var counterString = zeroPaddedNumber(count);
@@ -34,22 +36,38 @@ const writeCounter = (count, callback) => {
     }
   });
 };
+const writeCounterAsync = Promise.promisify(writeCounter);
 
 // Public API - Fix this function //////////////////////////////////////////////
-
+// console.log("readCounterAsync:", readCounterAsync);
 
 exports.getNextUniqueId = (callback) => { // callback is called onece the rest of the function has been run
-  readCounter((err, fileData) => { // readCounter accepts a callback (error-first)
-    var counter = fileData + 1;
-    writeCounter(counter, (err, counterString) => {
-      if (err) {
-        callback(err, null);
-      } else {
-        callback(null, counterString);
-      }
+  readCounterAsync()
+    .then((data) => {
+      var counter = data + 1;
+      writeCounterAsync(counter)
+        .then((id) => {
+          callback(null, id);
+        });
+    })
+    .catch((err) => {
+      console.log('err', err);
+      callback(err, null);
     });
-  });
 };
+
+// exports.getNextUniqueId = (callback) => { // callback is called onece the rest of the function has been run
+//   readCounter((err, fileData) => { // readCounter accepts a callback (error-first)
+//     var counter = fileData + 1;
+//     writeCounter(counter, (err, counterString) => {
+//       if (err) {
+//         callback(err, null);
+//       } else {
+//         callback(null, counterString);
+//       }
+//     });
+//   });
+// };
 
 
 // Configuration -- DO NOT MODIFY //////////////////////////////////////////////
